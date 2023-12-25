@@ -1,20 +1,20 @@
-from dotenv import get_key
+import os
 import requests
 from src.class_ParsingError import ParsingError
 from src.abs_class import InterfaceApi
 
 
 class SuperJob(InterfaceApi):
-    __API_KEY = get_key("env", 'SJ_KEY')
+    __API_KEY = os.getenv('SJ_KEY')
 
     def __init__(self, keyword):
         self.keyword = keyword
         self.__header = {"X-Api-App-Id": self.__API_KEY}
         self.__params = {
-                        "keyword": keyword,
-                        "page": 0,
-                        "count": 100,
-                        }
+            "keyword": keyword,
+            "page": 0,
+            "count": 100,
+        }
         self.__vacancies = []
 
     @property

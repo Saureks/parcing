@@ -1,4 +1,3 @@
-
 class Vacancy:
     __slots__ = ("vacancy_id", "title", "url", "salary_from", "salary_to", "employer", "api")
 
