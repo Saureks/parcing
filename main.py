@@ -1,16 +1,42 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from src.superjobApi import SuperJob
+from src.headhunterApi import HeadHunterAPI
+from src.connector import Connector
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def user_interaction():
+    vacancies_json = []
+    keyword = input("Введите профессию или должность: ")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    hh = HeadHunterAPI(keyword)
+    sj = SuperJob(keyword)
+    for api in (hh, sj):
+        api.get_vacancies(pages_count=10)
+        vacancies_json.extend(api.get_formatted_vacancies())
+
+    connector = Connector(keyword=keyword, vacancies_json=vacancies_json)
+
+    while True:
+        command = input(
+            '1 - Вывести список вакансий;\n'
+            '2 - Отсортировать по возврастанию дохода;\n'
+            '3 - Отсортировать по убыванию дохода;\n'
+            '0 - Выход;\n'
+        )
+        if command.lower() == "0":
+            break
+        elif command == "1":
+            vacancies = connector.select()
+        elif command == "2":
+            vacancies = connector.sorted_vacancies_by_salary_from_asc()
+        elif command == "3":
+            vacancies = connector.sorted_vacancies_by_salary_to_asc()
+        else:
+            print("Не корректные данные")
+            exit()
+
+        for vacancy in vacancies:
+            print(vacancy, end="\n\n")
+
+
+if __name__ == "__main__":
+    user_interaction()
